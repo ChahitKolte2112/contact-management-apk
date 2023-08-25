@@ -9,6 +9,18 @@ export interface Contact {
     lastname: string;
     status: string;
 }
+export interface Country {
+    id: number;
+    name: string;
+    lat: number;
+    lng: number;
+    activeCases: number;
+    recoveredCases: number;
+    deaths: number;
+}
+export interface Covid{
+    case:""
+}
 
 export interface FormData {
     email: string;

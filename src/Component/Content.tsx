@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Contact, ErrorForm } from "../utilis/interfaces";
+import { contactdataActions } from "../redux/contactdataSlice";
+import { useDispatch } from "react-redux";
+import Contactlist from "./Contactlist";
+
 const Content = () => {
-    const [data, setData] = useState<Contact[]>([]);
+    const dispatch = useDispatch();
+    const [toggle, setToggle] = useState<boolean>(false);
     const [contact, setContact] = useState<Contact>({
         firstname: "",
         lastname: "",
@@ -14,6 +19,7 @@ const Content = () => {
     });
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        console.log(e.target.name, e.target.value);
         setContact((prevContact) => ({
             ...prevContact,
             [name]: value,
@@ -23,76 +29,130 @@ const Content = () => {
             [name]: false,
         }));
     };
-    const submitHandler = (e: React.ChangeEvent<HTMLInputElement>) => {};
+    const submitHandler = (e: any) => {
+        e.preventDefault();
+        let temp: ErrorForm = {
+            firstname: false,
+            lastname: false,
+            status: false,
+        };
+        if (contact.firstname === "") {
+            temp = { ...temp, firstname: true };
+        }
+        if (contact.lastname === "") {
+            temp = { ...temp, lastname: true };
+        }
+
+        setError(temp);
+
+        if (contact.firstname && contact.lastname) {
+            dispatch(contactdataActions.adddata(contact));
+            setContact({
+                firstname: "",
+                lastname: "",
+                status: "",
+            });
+        }
+    };
+    const handleToggle = () => {
+        setToggle((prev) => {
+            return (prev = !prev);
+        });
+    };
     return (
         <div className="w-[full]">
-            <div className="w-full max-w-md mx-auto">
-                <form className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-                    <div className="mb-4">
-                        <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                            htmlFor="username"
-                        >
-                            Firstname
-                        </label>
-                        <input
-                            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
-                            id="FirstName"
-                            type="text"
-                            placeholder="Firstname"
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                            htmlFor="LastName"
-                        >
-                            LastName
-                        </label>
-                        <input
-                            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
-                            id="username"
-                            type="text"
-                            placeholder="Lastname"
-                        />
-                    </div>
-                    <div className="flex items-center  space-x-4">
-                        <label className="flex items-center space-x-2 cursor-pointer">
+            <div className="flex justify-center m-2">
+                <button
+                    className="bg-blue-600 p-3 text-lg text-white mr-3 rounded-md"
+                    onClick={handleToggle}
+                >
+                    Create New Contact
+                </button>
+            </div>
+            {toggle && (
+                <div className="max-w-lg  rounded-md bg-slate-200 mx-auto">
+                    <form
+                        onSubmit={submitHandler}
+                        className="  bg-slate-200 shadow-md rounded-lg px-8 pt-6 pb-8 mb-4"
+                    >
+                        <div className="mb-4">
+                            <label
+                                className="block text-gray-700 text-lg font-bold mb-2"
+                                htmlFor="username"
+                            >
+                                Firstname
+                            </label>
                             <input
-                                onChange={changeHandler}
-                                type="radio"
-                                name="status"
-                                className="form-radio text-black-500"
-                                value="true"
+                                className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
+                                id="FirstName"
+                                type="text"
+                                name="firstname"
+                                placeholder="Firstname"
+                                onChangeCapture={changeHandler}
+                                value={contact.firstname}
                             />
-                            <span className="text-sm font-semibold text-gray-700">
-                                Active
-                            </span>
-                        </label>
-
-                        <label className="flex items-center space-x-2 cursor-pointer">
+                        </div>
+                        <div className="mb-6">
+                            <label
+                                className="block text-gray-700 text-lg font-bold mb-2"
+                                htmlFor="LastName"
+                            >
+                                LastName
+                            </label>
                             <input
-                                onChange={changeHandler}
-                                type="radio"
-                                name="status"
-                                className="form-radio text-red-500"
-                                value="false"
+                                className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500"
+                                id="username"
+                                type="text"
+                                name="lastname"
+                                placeholder="Lastname"
+                                onChangeCapture={changeHandler}
+                                value={contact.lastname}
                             />
-                            <span className="text-sm font-semibold text-gray-700">
-                                Inactive
-                            </span>
-                        </label>
-                    </div>
+                        </div>
+                        <div className="flex items-center   space-x-4">
+                            <h3 className="text-gray-700 text-lg font-bold mb-2">
+                                Status
+                            </h3>
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                    onChange={changeHandler}
+                                    type="radio"
+                                    name="status"
+                                    className="form-radio text-black-500"
+                                    value="true"
+                                />
+                                <span className="text-md font-semibold text-gray-700">
+                                    Active
+                                </span>
+                            </label>
 
-                    <div className="flex items-center justify-center">
-                        <button
-                            className="bg-blue-500 w-[50%] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="button"
-                        >
-                            Save
-                        </button>
-                    </div>
-                </form>
+                            <label className="flex items-center space-x-2 cursor-pointer">
+                                <input
+                                    onChange={changeHandler}
+                                    type="radio"
+                                    name="status"
+                                    className="form-radio text-red-500"
+                                    value="false"
+                                />
+                                <span className="text-md font-semibold text-gray-700">
+                                    Inactive
+                                </span>
+                            </label>
+                        </div>
+
+                        <div className="flex items-center justify-center">
+                            <button
+                                className="bg-blue-500 w-[50%] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="submit"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
+            <div className="p-4">
+                <Contactlist />
             </div>
         </div>
     );
