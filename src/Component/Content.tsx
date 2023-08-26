@@ -1,22 +1,25 @@
 import React, { useState } from "react";
-import { Contact, ErrorForm } from "../utilis/interfaces";
+import { ErrorForm, FormData } from "../utilis/interfaces";
 import { contactdataActions } from "../redux/contactdataSlice";
 import { useDispatch } from "react-redux";
 import Contactlist from "./Contactlist";
 
-const Content = () => {
+const Content = (props: any) => {
     const dispatch = useDispatch();
+
     const [toggle, setToggle] = useState<boolean>(false);
-    const [contact, setContact] = useState<Contact>({
+    const [contact, setContact] = useState<FormData>({
         firstname: "",
         lastname: "",
         status: "",
     });
+
     const [error, setError] = useState<ErrorForm>({
         firstname: false,
         lastname: false,
         status: false,
     });
+
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         console.log(e.target.name, e.target.value);
@@ -42,10 +45,13 @@ const Content = () => {
         if (contact.lastname === "") {
             temp = { ...temp, lastname: true };
         }
+        if (contact.status === "") {
+            temp = { ...temp, status: true };
+        }
 
         setError(temp);
 
-        if (contact.firstname && contact.lastname) {
+        if (contact.firstname && contact.lastname && contact.status !== "") {
             dispatch(contactdataActions.adddata(contact));
             setContact({
                 firstname: "",
@@ -54,20 +60,24 @@ const Content = () => {
             });
         }
     };
+
     const handleToggle = () => {
         setToggle((prev) => {
             return (prev = !prev);
         });
     };
+
     return (
         <div className="w-[full]">
             <div className="flex justify-center m-2">
-                <button
-                    className="bg-blue-600 p-3 text-lg text-white mr-3 rounded-md"
-                    onClick={handleToggle}
-                >
-                    Create New Contact
-                </button>
+                {!props.selected && (
+                    <button
+                        className="bg-blue-600 p-3 text-lg text-white mr-3 rounded-md"
+                        onClick={handleToggle}
+                    >
+                        Create New Contact
+                    </button>
+                )}
             </div>
             {toggle && (
                 <div className="max-w-lg  rounded-md bg-slate-200 mx-auto">
@@ -92,6 +102,11 @@ const Content = () => {
                                 value={contact.firstname}
                             />
                         </div>
+                        {error.firstname && (
+                            <p className="text-red-700 mt-[-10px]">
+                                Firstname is required
+                            </p>
+                        )}
                         <div className="mb-6">
                             <label
                                 className="block text-gray-700 text-lg font-bold mb-2"
@@ -109,6 +124,11 @@ const Content = () => {
                                 value={contact.lastname}
                             />
                         </div>
+                        {error.lastname && (
+                            <p className="text-red-700 mt-[-10px]">
+                                Lasttname is required
+                            </p>
+                        )}
                         <div className="flex items-center   space-x-4">
                             <h3 className="text-gray-700 text-lg font-bold mb-2">
                                 Status
@@ -138,6 +158,11 @@ const Content = () => {
                                     Inactive
                                 </span>
                             </label>
+                            {error.status && (
+                                <p className="text-red-700 mt-[-10px]">
+                                    Status is required
+                                </p>
+                            )}
                         </div>
 
                         <div className="flex items-center justify-center">

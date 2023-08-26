@@ -10,10 +10,11 @@ import { Line } from "react-chartjs-2";
 import {
     Chart,
     CategoryScale,
-    LinearScale, 
+    LinearScale,
     LineElement,
     PointElement,
 } from "chart.js";
+import SideBar from "../Component/SideBar";
 
 Chart.register(CategoryScale, LinearScale, LineElement, PointElement);
 
@@ -47,9 +48,8 @@ const LineCharts = () => {
 
     return (
         <>
-        <div className="flex gap-3">
-        {
-        /* <BoxWrapper>
+            <div className="flex gap-3">
+                {/* <BoxWrapper>
           <div className="rounded-full h-12 w-12 flex items-center justify-center bg-sky-500">
             <IoBriefcaseSharp className="text-2xl text-white" />
           </div>
@@ -114,16 +114,25 @@ const LineCharts = () => {
             </div>
           </div>
         </BoxWrapper> */}
-      </div>
-            {" "}
-            <h1 className="text-2xl font-bold mb-4 text-center">
-                Covid-19 Historical Data
-            </h1>
-            <div className="bg-white p-4  flex justify-center rounded-md mt-1 shadow-lg border-red-400 ">
-                <div className=" w-[75%] flex justify-center">
-                    {Object.keys(data).length > 0 && (
-                        <Line className="border-3" data={chartData} />
-                    )}
+            </div>{" "}
+            <div>
+                <h1 className="bg-slate-100 text-2xl font-bold mb-4 text-center p-2">
+                    Covid-19 Historical Data
+                </h1>
+                <div className="flex w-[screen]">
+                    <div className="bg-slate-100 p-10 h-screen ">
+                        <SideBar />
+                    </div>
+                    <div className="bg-white p-4  justify-center rounded-md mt-1 shadow-lg ">
+                        <div className="  flex justify-center">
+                            {Object.keys(data).length > 0 && (
+                                <Line
+                                    className="border-3 w-[1000px]"
+                                    data={chartData}
+                                />
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

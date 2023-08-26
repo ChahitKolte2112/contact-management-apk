@@ -5,6 +5,7 @@ export interface Data {
     body: string;
 }
 export interface Contact {
+    id: number;
     firstname: string;
     lastname: string;
     status: string;
@@ -18,14 +19,14 @@ export interface Country {
     recoveredCases: number;
     deaths: number;
 }
-export interface Covid{
-    case:""
+export interface Covid {
+    case: "";
 }
 
 export interface FormData {
-    email: string;
-    name: string;
-    mobilenumber: string;
+    firstname: string;
+    lastname: string;
+    status: string;
 }
 
 export interface ErrorForm {
